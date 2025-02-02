@@ -1,6 +1,6 @@
 ﻿string[] validOperators = ["+", "-", "*", "/"];
-bool quit = false;
-while (true && !quit)
+var quit = false;
+while (!quit)
 {
     Console.WriteLine("Please pick an operator you want to play:");
     Console.WriteLine("+ :: Addition \n- :: Subtraction \n* :: Multiplication \n/ :: Division \nq :: quit");
@@ -30,7 +30,7 @@ while (true && !quit)
                 "-" => Operators.Subtraction,
                 "*" => Operators.Multiplication,
                 "/" => Operators.Division,
-                _ => throw new InvalidOperationException("Invalid operator")
+                _ => throw new Exception("Invalid operator")
             };
             DoOperation(selectedOperator);
         }
@@ -39,7 +39,6 @@ while (true && !quit)
     {
         Console.Clear();
         Console.WriteLine("Input cannot be empty!");
-
     }
     
 }
