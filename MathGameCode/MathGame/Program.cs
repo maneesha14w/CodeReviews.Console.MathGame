@@ -2,46 +2,58 @@
 var quit = false;
 while (!quit)
 {
-    Console.WriteLine("Please pick an operator you want to play:");
-    Console.WriteLine("+ :: Addition \n- :: Subtraction \n* :: Multiplication \n/ :: Division \nq :: quit");
-
+    ShowMenu();
     var userOperator = Console.ReadLine();
-    var isNotValidOperator = !Array.Exists(validOperators, op => op == userOperator);
 
-    
-    if (!string.IsNullOrWhiteSpace(userOperator))
+
+    if (string.IsNullOrWhiteSpace(userOperator))
     {
-        if (userOperator.Equals("q", StringComparison.OrdinalIgnoreCase))
-        {
-            quit = true;
-            Console.Clear();
-            Console.WriteLine("Thank you for playing :)");
-        }
-        else if (isNotValidOperator)
-        {
-            Console.Clear();
-            Console.WriteLine("Please enter a valid operator");
-        }
-        else
-        {
-            var selectedOperator = userOperator switch
-            {
-                "+" => Operators.Addition,
-                "-" => Operators.Subtraction,
-                "*" => Operators.Multiplication,
-                "/" => Operators.Division,
-                _ => throw new Exception("Invalid operator")
-            };
-            DoOperation(selectedOperator);
-        }
+        DisplayMessage("Operator cannot be empty");
+        continue;
+    }
+
+    if (IsQuit(userOperator))
+    {
+        DisplayMessage("Thank you for playing :)");
+        quit = true;
+    }
+    else if (IsNotValidOperator(userOperator!))
+    {
+        Console.Clear();
+        Console.WriteLine("Please enter a valid operator");
+    }
+    else if (IsNotValidOperator(userOperator!))
+    {
+        DisplayMessage("Please enter a valid operator");
     }
     else
     {
-        Console.Clear();
-        Console.WriteLine("Input cannot be empty!");
+        DoOperation(GetOperator(userOperator!));
     }
-    
 }
+
+void ShowMenu()
+{
+    Console.WriteLine("Please pick an operator you want to play:");
+    Console.WriteLine("+ :: Addition \n- :: Subtraction \n* :: Multiplication \n/ :: Division \nq :: quit");
+}
+
+void DisplayMessage(String msg) {
+    Console.Clear();
+    Console.WriteLine(msg);
+}
+
+bool IsNotValidOperator(String userOperator) => !Array.Exists(validOperators, op => op == userOperator);
+bool IsQuit(String? userOperator) => userOperator!.Equals("q", StringComparison.OrdinalIgnoreCase);
+
+static Operators GetOperator(string userOperator) => userOperator switch
+{
+    "+" => Operators.Addition,
+    "-" => Operators.Subtraction,
+    "*" => Operators.Multiplication,
+    "/" => Operators.Division,
+    _ => throw new Exception("Invalid operator")
+};
 
 void DoOperation(Operators op)
 {
