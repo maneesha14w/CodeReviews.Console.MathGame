@@ -19,8 +19,7 @@ while (!quit)
     }
     else if (IsNotValidOperator(userOperator!))
     {
-        Console.Clear();
-        Console.WriteLine("Please enter a valid operator");
+        DisplayMessage("Please enter a valid operator");
     }
     else if (IsNotValidOperator(userOperator!))
     {
@@ -28,7 +27,7 @@ while (!quit)
     }
     else
     {
-        DoOperation(GetOperator(userOperator!));
+        DoOperation(GetOperator(userOperator!), userOperator);
     }
 }
 
@@ -55,9 +54,11 @@ static Operators GetOperator(string userOperator) => userOperator switch
     _ => throw new Exception("Invalid operator")
 };
 
-void DoOperation(Operators op)
+void DoOperation(Operators operationType, String operationSignString)
 {
-    Console.WriteLine(op);
+    Random rnd = new Random();
+    (Int32 num1, Int32 num2) = (rnd.Next(1, 100), rnd.Next(1, 100));
+    DisplayMessage($"{num1} {operationSignString} {num2}");
 }
 
 internal enum Operators
