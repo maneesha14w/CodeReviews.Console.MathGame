@@ -17,17 +17,17 @@ while (!quit)
         DisplayMessage("Thank you for playing :)");
         quit = true;
     }
-    else if (IsNotValidOperator(userOperator!))
+    else if (IsNotValidOperator(userOperator))
     {
         DisplayMessage("Please enter a valid operator");
     }
-    else if (IsNotValidOperator(userOperator!))
+    else if (IsNotValidOperator(userOperator))
     {
         DisplayMessage("Please enter a valid operator");
     }
     else
     {
-        DoOperation(GetOperator(userOperator!), userOperator);
+        DoOperation(GetOperator(userOperator), userOperator);
     }
 }
 
@@ -37,28 +37,83 @@ void ShowMenu()
     Console.WriteLine("+ :: Addition \n- :: Subtraction \n* :: Multiplication \n/ :: Division \nq :: quit");
 }
 
-void DisplayMessage(String msg) {
+void DisplayMessage(string msg)
+{
     Console.Clear();
     Console.WriteLine(msg);
 }
 
-bool IsNotValidOperator(String userOperator) => !Array.Exists(validOperators, op => op == userOperator);
-bool IsQuit(String? userOperator) => userOperator!.Equals("q", StringComparison.OrdinalIgnoreCase);
-
-static Operators GetOperator(string userOperator) => userOperator switch
+bool IsNotValidOperator(string userOperator)
 {
-    "+" => Operators.Addition,
-    "-" => Operators.Subtraction,
-    "*" => Operators.Multiplication,
-    "/" => Operators.Division,
-    _ => throw new Exception("Invalid operator")
-};
+    return !Array.Exists(validOperators, op => op == userOperator);
+}
 
-void DoOperation(Operators operationType, String operationSignString)
+bool IsQuit(string? userOperator)
 {
-    Random rnd = new Random();
-    (Int32 num1, Int32 num2) = (rnd.Next(1, 100), rnd.Next(1, 100));
-    DisplayMessage($"{num1} {operationSignString} {num2}");
+    return userOperator!.Equals("q", StringComparison.OrdinalIgnoreCase);
+}
+
+static Operators GetOperator(string userOperator)
+{
+    return userOperator switch
+    {
+        "+" => Operators.Addition,
+        "-" => Operators.Subtraction,
+        "*" => Operators.Multiplication,
+        "/" => Operators.Division,
+        _ => throw new Exception("Invalid operator")
+    };
+}
+
+(int, int) IsValidDivision((int, int) tuple, Random random)
+{
+    if (tuple.Item1 % tuple.Item2 == 0) return tuple;
+    while (tuple.Item1 % tuple.Item2 == 0)
+    {
+        (tuple.Item1, tuple.Item2) = (random.Next(1, 100), random.Next(1, 100));
+    }
+    Console.WriteLine(tuple.Item1 + " "+ tuple.Item2);
+    return tuple;
+}
+
+void DoOperation(Operators operationType, string operationSignString)
+{
+    var rnd = new Random();
+    var (num1, num2) = (rnd.Next(1, 100), rnd.Next(1, 100));
+    Console.WriteLine(num1 +  " " + num2);
+    if (operationType == Operators.Division)
+    {
+        (num1, num2) = IsValidDivision((num1, num2), rnd);
+    };
+    Console.WriteLine($"{num1} {operationSignString} {num2}");
+    Console.WriteLine("What is the result of the expression above?");
+    var result = GetResult(operationType, (num1, num2));
+    while (true)
+    {
+        var userAnswer = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(userAnswer) && int.TryParse(userAnswer,out var ans))
+        {
+            if (result == ans)
+            {
+                Console.WriteLine("Success");
+                break;
+            }
+            Console.WriteLine("Incorrect");
+        }
+    }
+    Task.Delay(4000);
+}
+
+int GetResult(Operators operationType, (int, int) tuple)
+{
+    return operationType switch
+    {
+        Operators.Addition => tuple.Item1 + tuple.Item2,
+        Operators.Subtraction => tuple.Item1 - tuple.Item2,
+        Operators.Multiplication => tuple.Item1 * tuple.Item2,
+        Operators.Division => tuple.Item1 / tuple.Item2,
+        _ => 0
+    };
 }
 
 internal enum Operators
