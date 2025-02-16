@@ -1,5 +1,6 @@
 ﻿string[] validOperators = ["+", "-", "*", "/"];
 var quit = false;
+
 while (!quit)
 {
     ShowMenu();
@@ -68,7 +69,7 @@ static Operators GetOperator(string userOperator)
 (int, int) IsValidDivision((int, int) tuple, Random random)
 {
     if (tuple.Item1 % tuple.Item2 == 0) return tuple;
-    while (tuple.Item1 % tuple.Item2 == 0)
+    while (tuple.Item1 % tuple.Item2 != 0)
     {
         (tuple.Item1, tuple.Item2) = (random.Next(1, 100), random.Next(1, 100));
     }
